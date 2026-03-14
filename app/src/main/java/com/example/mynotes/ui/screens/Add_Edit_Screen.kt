@@ -1,31 +1,37 @@
 package com.example.mynotes.ui.screens
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.mynotes.model.Note
 import com.example.mynotes.viewmodel.NoteViewModel
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditScreen(
 
     noteId: Int? = null,
-    viewModel: NoteViewModel ,
+    viewModel: NoteViewModel,
     onBack: () -> Unit
 
 ) {
 
+    val notes by viewModel.notes.collectAsState(initial = emptyList())
+
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
 
-    LaunchedEffect(noteId) {
+    LaunchedEffect(noteId, notes) {
 
         if (noteId != null) {
 
-            val note = viewModel.notes.find { it.id == noteId }
+            val note = notes.find { it.id == noteId }
 
             note?.let {
 
@@ -68,16 +74,28 @@ fun AddEditScreen(
 
         ) {
 
-            TextField(
+            Box {
 
-                value = title,
-                onValueChange = { title = it },
+                if (title.isEmpty()) {
+                    Text(
+                        text = "Title",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.Gray
+                    )
+                }
 
-                label = { Text("Title") },
+                BasicTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    textStyle = MaterialTheme.typography.titleLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
 
-                modifier = Modifier.fillMaxWidth()
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
 
-            )
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -117,9 +135,7 @@ fun AddEditScreen(
 
                     OutlinedButton(
 
-                        onClick = {
-                            onBack()
-                        }
+                        onClick = { onBack() }
 
                     ) {
                         Text("Cancel")
@@ -131,7 +147,14 @@ fun AddEditScreen(
 
                         onClick = {
 
-                            viewModel.editNote(noteId, title, content)
+                            val updatedNote = Note(
+                                id = noteId,
+                                title = title,
+                                content = content,
+                                date = "Today"
+                            )
+
+                            viewModel.updateNote(updatedNote)
                             onBack()
 
                         }
@@ -146,7 +169,12 @@ fun AddEditScreen(
 
                         onClick = {
 
-                            viewModel.deleteNote(noteId)
+                            val note = notes.find { it.id == noteId }
+
+                            note?.let {
+                                viewModel.deleteNote(it)
+                            }
+
                             onBack()
 
                         }
@@ -159,9 +187,7 @@ fun AddEditScreen(
 
                     OutlinedButton(
 
-                        onClick = {
-                            onBack()
-                        }
+                        onClick = { onBack() }
 
                     ) {
                         Text("Cancel")

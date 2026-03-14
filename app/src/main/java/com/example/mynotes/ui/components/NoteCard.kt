@@ -13,10 +13,8 @@ import com.example.mynotes.model.Note
 
 @Composable
 fun NoteCard(
-
     note: Note,
     onClick: () -> Unit
-
 ) {
 
     Card(
@@ -26,33 +24,33 @@ fun NoteCard(
             .padding(8.dp)
             .clickable { onClick() },
 
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(6.dp)
 
     ) {
 
         Column(
-
             modifier = Modifier.padding(16.dp)
-
         ) {
 
             Text(
                 text = note.title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleLarge
             )
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = note.content,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 4,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = note.date,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
         }

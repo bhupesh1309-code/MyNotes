@@ -1,51 +1,56 @@
 package com.example.mynotes.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.mynotes.data.database.NoteDatabase
 import com.example.mynotes.model.Note
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class NoteViewModel : ViewModel() {
+class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _notes = mutableStateListOf<Note>()
+    private val dao = NoteDatabase.getDatabase(application).noteDao()
 
-    val notes: List<Note>
-        get() = _notes
-
-    private var nextId = 0
+    val notes = dao.getAllNotes()
 
     fun addNote(title: String, content: String) {
 
-        val note = Note(
-            id = nextId++,
-            title = title,
-            content = content,
-            date = "Today"
-        )
+        viewModelScope.launch {
 
-        _notes.add(note)
-    }
-
-    fun deleteNote(id: Int) {
-
-        val index = _notes.indexOfFirst { it.id == id }
-
-        if (index != -1) {
-            _notes.removeAt(index)
-        }
-    }
-
-    fun editNote(id: Int, newTitle: String, newContent: String) {
-
-        val index = _notes.indexOfFirst { it.id == id }
-
-        if (index != -1) {
-
-            val updatedNote = _notes[index].copy(
-                title = newTitle,
-                content = newContent
+            val note = Note(
+                title = title,
+                content = content,
+                date = getCurrentDateTime()
             )
 
-            _notes[index] = updatedNote
+            dao.insertNote(note)
         }
+    }
+
+    fun deleteNote(note: Note) {
+
+        viewModelScope.launch {
+            dao.deleteNote(note)
+        }
+    }
+
+    fun updateNote(note: Note) {
+
+        viewModelScope.launch {
+            dao.updateNote(note)
+        }
+    }
+
+    private fun getCurrentDateTime(): String {
+
+        val formatter = SimpleDateFormat(
+            "dd MMM yyyy  HH:mm",
+            Locale.getDefault()
+        )
+
+        return formatter.format(Date())
     }
 }
