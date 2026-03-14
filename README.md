@@ -1,16 +1,23 @@
+
 # MyNotes - Android App
 
-MyNotes is a modern notes application built using **Kotlin**, **Jetpack Compose**, and **MVVM architecture**.
+MyNotes is a modern notes application built using Kotlin, Jetpack Compose, and MVVM architecture.  
+The app allows users to create, edit, and delete notes with a clean and simple UI.
 
-⚠️ This project is currently under development
+⚠️ This project is currently under development.
+
+---
 
 ## Features
 
-- Create notes
-- Edit notes
+- Create new notes
+- Edit existing notes
 - Delete notes
 - Clean grid-based UI
 - Navigation between screens
+- Simple and minimal design
+
+---
 
 ## Tech Stack
 
@@ -18,13 +25,33 @@ MyNotes is a modern notes application built using **Kotlin**, **Jetpack Compose*
 - Jetpack Compose
 - MVVM Architecture
 - Navigation Component
+- Room Database 
+
+---
 
 ## Future Improvements
 
-- Room Database for persistent storage
-- Search functionality
-- Dark mode improvements
+- Search notes functionality
+- Dark mode support
+- UI improvements
+- Note categories
+
+---
+
+## Project Structure
+
+app/
+├── data  
+│ ├── dao  
+│ └── database  
+├── model  
+├── ui  
+├── viewmodel  
+
+---
 
 ## Author
 
 Bhupesh
+
+---
